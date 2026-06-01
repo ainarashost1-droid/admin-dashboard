@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1NONLY Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0a; color: #f0f0f0; font-family: 'Inter', sans-serif; }
+.top { background: #111; border-bottom: 1px solid #222; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.logo { font-size: 18px; font-weight: 700; letter-spacing: .1em; }
+.logo span { color: #00D4FF; }
+.top-right { display: flex; gap: 8px; }
+.btn { padding: 8px 16px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-blue { background: #00D4FF; color: #000; }
+.btn-gray { background: #1a1a1a; border: 1px solid #333; color: #888; }
+.page { padding: 16px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat { background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; }
+.stat-n { font-size: 28px; font-weight: 700; margin-bottom: 2px; }
+.stat-l { font-size: 11px; color: #666; }
+.stat-b { color: #00D4FF; }
+.stat-g { color: #00FF88; }
+.stat-o { color: #FFB800; }
+.filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.f { background: #111; border: 1px solid #222; color: #666; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+.f.on { background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.4); color: #00D4FF; }
+.cards { display: flex; flex-direction: column; gap: 12px; }
+.card { background: #111; border: 1px solid #222; border-radius: 14px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
+.card:hover { border-color: rgba(0,212,255,0.3); }
+.card-h { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1a1a1a; }
+.av { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.cl-name { font-size: 13px; font-weight: 600; margin-left: 10px; }
+.cl-ni { font-size: 11px; color: #666; margin-left: 10px; }
+.st { font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+.st-p { background: rgba(255,184,0,0.15); color: #FFB800; }
+.st-a { background: rgba(0,255,136,0.15); color: #00FF88; }
+.st-po { background: rgba(0,212,255,0.15); color: #00D4FF; }
+.st-r { background: rgba(255,68,68,0.15); color: #FF4444; }
+.card-b { padding: 12px 16px; }
+.banner { border-radius: 10px; overflow: hidden; margin-bottom: 10px; height: 100px; display: flex; align-items: center; justify-content: center; }
+.ban-t { font-size: 16px; font-weight: 700; text-align: center; }
+.ban-s { font-size: 11px; opacity: .6; text-align: center; margin-top: 4px; }
+.ban-cta { margin-top: 8px; display: inline-block; padding: 4px 14px; border-radius: 14px; font-size: 10px; font-weight: 700; }
+.vid { background: #1a0a0a; border-radius: 10px; height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; position: relative; }
+.play { width: 44px; height: 44px; background: rgba(255,255,255,.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.cap { background: #1a1a1a; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 12px; line-height: 1.6; color: #aaa; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.htags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.ht { font-size: 10px; color: #00D4FF; opacity: .8; }
+.acc-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2px; }
+.acc { font-size: 11px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; padding: 3px 8px; color: #888; }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 16px; border-top: 1px solid #1a1a1a; }
+.act { padding: 9px; border-radius: 8px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+.act-app { background: rgba(0,255,136,0.1); color: #00FF88; border: 1px solid rgba(0,255,136,0.2); }
+.act-rej { background: rgba(255,68,68,0.08); color: #FF4444; border: 1px solid rgba(255,68,68,0.15); }
+.act-edt { background: rgba(255,184,0,0.08); color: #FFB800; border: 1px solid rgba(255,184,0,0.15); }
+.act-pst { background: #00D4FF; color: #000; border: none; grid-column: 1/-1; }
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 50; display: none; }
+.modal-bg.on { display: block; }
+.modal { position: fixed; bottom: 0; left: 0; right: 0; background: #111; border-top: 1px solid #333; border-radius: 20px 20px 0 0; z-index: 51; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform .35s cubic-bezier(.4,0,.2,1); }
+.modal.on { transform: translateY(0); }
+.m-handle { width: 36px; height: 4px; background: #333; border-radius: 2px; margin: 14px auto 0; }
+.m-head { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1a1a1a; }
+.m-title { font-size: 15px; font-weight: 700; }
+.m-close { background: #1a1a1a; border: 1px solid #2a2a2a; color: #888; width: 30px; height: 30px; border-radius: 7px; cursor: pointer; font-size: 13px; }
+.m-body { padding: 20px; }
+.m-sec { margin-bottom: 20px; }
+.m-lbl { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #666; margin-bottom: 10px; }
+.m-req { background: #1a1a1a; border-radius: 9px; padding: 12px; font-size: 13px; line-height: 1.7; color: #aaa; font-style: italic; }
+.m-cap { background: #1a1a1a; border-radius: 9px; padding: 12px; font-size: 13px; line-height: 1.8; color: #ccc; }
+.m-tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+.m-tag { font-size: 11px; color: #00D4FF; background: rgba(0,212,255,0.08); padding: 3px 9px; border-radius: 5px; }
+.m-accs { display: flex; flex-direction: column; gap: 8px; }
+.m-acc { display: flex; align-items: center; justify-content: space-between; background: #1a1a1a; border-radius: 8px; padding: 10px 12px; }
+.m-acc-l { display: flex; align-items: center; gap: 10px; }
+.m-acc-h { font-size: 12px; font-weight: 500; }
+.m-acc-f { font-size: 11px; color: #666; }
+.tog { width: 40px; height: 22px; background: #00FF88; border-radius: 11px; position: relative; cursor: pointer; }
+.tog::after { content: ''; position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: .2s; }
+.tog.off { background: #2a2a2a; }
+.tog.off::after { right: auto; left: 3px; }
+.m-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.m-btn { padding: 12px; border-radius: 9px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; }
+.m-app { background: rgba(0,255,136,0.1); color: #00FF88; border: 1px solid rgba(0,255,136,0.2); }
+.m-rej { background: rgba(255,68,68,0.08); color: #FF4444; border: 1px solid rgba(255,68,68,0.15); }
+.m-pst { background: #00D4FF; color: #000; grid-column: 1/-1; font-size: 14px; padding: 14px; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1a1a1a; border: 1px solid #333; border-radius: 9px; padding: 10px 20px; font-size: 13px; z-index: 100; transition: transform .3s; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.s { border-color: rgba(0,255,136,0.4); color: #00FF88; }
+.toast.e { border-color: rgba(255,68,68,0.4); color: #FF4444; }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="logo">1N<span>ONLY</span></div>
+  <div class="top-right">
+    <button class="btn btn-gray">🔔</button>
+    <button class="btn btn-blue">+ New</button>
+  </div>
+</div>
+
+<div class="page">
+  <div class="stats">
+    <div class="stat"><div class="stat-n stat-o">3</div><div class="stat-l">⏳ Pending</div></div>
+    <div class="stat"><div class="stat-n stat-g">47</div><div class="stat-l">✅ Approved</div></div>
+    <div class="stat"><div class="stat-n stat-b">38</div><div class="stat-l">🚀 Posted</div></div>
+    <div class="stat"><div class="stat-n" style="color:#fff">12</div><div class="stat-l">👥 Clients</div></div>
+  </div>
+
+  <div class="filters">
+    <div class="f on" onclick="setFilter('all',this)">All</div>
+    <div class="f" onclick="setFilter('pending',this)">⏳ Pending</div>
+    <div class="f" onclick="setFilter('approved',this)">✅ Approved</div>
+    <div class="f" onclick="setFilter('banner',this)">🖼️ Banner</div>
+    <div class="f" onclick="setFilter('video',this)">🎬 Video</div>
+  </div>
+
+  <div class="cards" id="cards"></div>
+</div>
+
+<div class="modal-bg" id="mbg" onclick="closeModal()"></div>
+<div class="modal" id="modal">
+  <div class="m-handle"></div>
+  <div class="m-head">
+    <div class="m-title" id="mtitle">Detail</div>
+    <button class="m-close" onclick="closeModal()">✕</button>
+  </div>
+  <div class="m-body" id="mbody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var data = [
+  {
+    id: 1, name: "Alex R.", niche: "Crypto", av: "#00D4FF", al: "A",
+    status: "pending", type: "banner", time: "2 min ago",
+    req: "Promote Bitcoin trading course. Professional, trust-building.",
+    bTitle: "Master Bitcoin Trading", bSub: "Learn strategies from zero to profit",
+    bBg: "linear-gradient(135deg,#050a1a,#001a33)", bAc: "#00D4FF", bCta: "Start Today",
+    cap: "The market never sleeps and neither does your opportunity. Our Bitcoin Trading Course gives you the tools and confidence to trade smarter. Join 2000+ students who have already transformed their financial future.",
+    tags: ["#bitcoin","#crypto","#trading","#btc","#investing","#financialfreedom","#blockchain","#wealth"],
+    accs: [{p:"📸",h:"@crypto.ig",f:"2.4K",on:true},{p:"🎵",h:"@crypto.tt",f:"1.1K",on:true}]
+  },
+  {
+    id: 2, name: "Maria K.", niche: "Fitness", av: "#FF6B6B", al: "M",
+    status: "pending", type: "video", time: "18 min ago",
+    req: "12-week body transformation. Women 25-40. Motivational vibe.",
+    vBg: "linear-gradient(135deg,#1a0510,#2d0a1a)", vE: "💪",
+    cap: "Your transformation starts with one decision. In 12 weeks our program has helped hundreds of women build real strength and feel unstoppable. No gym required. Just commitment.",
+    tags: ["#fitness","#transformation","#workout","#motivation","#womenshealth","#bodygoals","#exercise"],
+    accs: [{p:"📸",h:"@fit.ig",f:"1.8K",on:true},{p:"🎵",h:"@fit.tt",f:"3.2K",on:true}]
+  },
+  {
+    id: 3, name: "Tom B.", niche: "Fashion", av: "#FFB800", al: "T",
+    status: "approved", type: "banner", time: "1 hr ago",
+    req: "Summer collection drop. Luxury streetwear. Exclusive and premium.",
+    bTitle: "Summer Drop 2026", bSub: "Exclusive luxury streetwear",
+    bBg: "linear-gradient(135deg,#0f0a00,#1a1000)", bAc: "#FFB800", bCta: "Shop Now",
+    cap: "This is not just clothing. This is a statement. Our Summer 2026 collection is limited and built for those who understand style. Only 50 pieces per design.",
+    tags: ["#fashion","#streetwear","#luxury","#summerdrop","#limitededition","#style","#ootd"],
+    accs: [{p:"📸",h:"@style.ig",f:"4.1K",on:true},{p:"🎵",h:"@style.tt",f:"2.8K",on:true}]
+  }
+];
+
+var cf = "all";
+var sel = null;
+
+function statusClass(s) {
+  if(s==="pending") return "st-p";
+  if(s==="approved") return "st-a";
+  if(s==="posted") return "st-po";
+  return "st-r";
+}
+
+function statusLabel(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function renderBanner(c) {
+  if(!c.bTitle) return "";
+  return "<div class='banner' style='background:"+c.bBg+"'><div><div class='ban-t' style='color:"+c.bAc+"'>"+c.bTitle+"</div><div class='ban-s'>"+c.bSub+"</div><div class='ban-cta' style='background:"+c.bAc+";color:#000'>"+c.bCta+"</div></div></div>";
+}
+
+function renderVideo(c) {
+  if(c.type!=="video") return "";
+  return "<div class='vid' style='background:"+c.vBg+"'><div class='play'>"+c.vE+"</div></div>";
+}
+
+function render() {
+  var list = document.getElementById("cards");
+  var items = [];
+  for(var i=0;i<data.length;i++) {
+    var c = data[i];
+    if(cf!=="all" && c.status!==cf && c.type!==cf) continue;
+    items.push(c);
+  }
+  if(!items.length) {
+    list.innerHTML = "<div style='text-align:center;padding:60px;color:#555'>No campaigns found</div>";
+    return;
+  }
+  var h = "";
+  for(var i=0;i<items.length;i++) {
+    var c = items[i];
+    var media = c.type==="video" ? renderVideo(c) : renderBanner(c);
+    var tags = "";
+    for(var t=0;t<Math.min(5,c.tags.length);t++) tags += "<span class='ht'>"+c.tags[t]+"</span>";
+    var accs = "";
+    for(var a=0;a<c.accs.length;a++) {
+      if(c.accs[a].on) accs += "<span class='acc'>"+c.accs[a].p+" "+c.accs[a].h+"</span>";
+    }
+    var acts = "";
+    if(c.status==="pending") {
+      acts = "<button class='act act-app' onclick='event.stopPropagation();doApprove("+c.id+")'>✓ Approve</button>";
+      acts += "<button class='act act-rej' onclick='event.stopPropagation();doReject("+c.id+")'>✗ Reject</button>";
+      acts += "<button class='act act-pst' onclick='event.stopPropagation();openModal("+c.id+")'>👁 View Full</button>";
+    } else if(c.status==="approved") {
+      acts = "<button class='act act-edt' onclick='event.stopPropagation()'>✏️ Edit</button>";
+      acts += "<button class='act act-rej' onclick='event.stopPropagation();doReject("+c.id+")'>✗ Reject</button>";
+      acts += "<button class='act act-pst' onclick='event.stopPropagation();doPost("+c.id+")'>🚀 Post Now</button>";
+    } else {
+      acts = "<button class='act act-app' style='grid-column:1/-1' onclick='event.stopPropagation();doApprove("+c.id+")'>↩ Re-approve</button>";
+    }
+    h += "<div class='card' onclick='openModal("+c.id+")'>";
+    h += "<div class='card-h'>";
+    h += "<div style='display:flex;align-items:center'><div class='av' style='background:"+c.av+";color:#000'>"+c.al+"</div>";
+    h += "<div><div class='cl-name'>"+c.name+"</div><div class='cl-ni'>"+c.niche+"</div></div></div>";
+    h += "<div class='st "+statusClass(c.status)+"'>"+statusLabel(c.status)+"</div>";
+    h += "</div><div class='card-b'>";
+    h += media;
+    h += "<div class='cap'>"+c.cap+"</div>";
+    h += "<div class='htags'>"+tags+"</div>";
+    h += "<div class='acc-row'>"+accs+"</div>";
+    h += "</div><div class='actions'>"+acts+"</div></div>";
+  }
+  list.innerHTML = h;
+}
+
+function setFilter(f, el) {
+  cf = f;
+  var btns = document.querySelectorAll(".f");
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove("on");
+  el.classList.add("on");
+  render();
+}
+
+function openModal(id) {
+  var c = null;
+  for(var i=0;i<data.length;i++) { if(data[i].id===id) { c=data[i]; break; } }
+  if(!c) return;
+  sel = c;
+  document.getElementById("mtitle").textContent = c.name + " — " + c.niche;
+  var media = c.type==="video" ? renderVideo(c) : renderBanner(c);
+  var tags = "";
+  for(var t=0;t<c.tags.length;t++) tags += "<span class='m-tag'>"+c.tags[t]+"</span>";
+  var accs = "";
+  for(var a=0;a<c.accs.length;a++) {
+    accs += "<div class='m-acc'><div class='m-acc-l'><span style='font-size:16px'>"+c.accs[a].p+"</span><div><div class='m-acc-h'>"+c.accs[a].h+"</div><div class='m-acc-f'>"+c.accs[a].f+" followers</div></div></div>";
+    accs += "<div class='tog "+(c.accs[a].on?"":"off")+"' onclick='togAcc("+c.id+","+a+")'></div></div>";
+  }
+  var btns = "";
+  if(c.status==="pending"||c.status==="rejected") {
+    btns = "<button class='m-btn m-app' onclick='doApprove("+c.id+")'>✓ Approve</button><button class='m-btn m-rej' onclick='doReject("+c.id+")'>✗ Reject</button>";
+  } else {
+    btns = "<button class='m-btn m-rej' onclick='doReject("+c.id+")'>✗ Reject</button><button class='m-btn m-app' onclick='showToast(\"Edit soon\",\"s\")'>✏️ Edit</button>";
+  }
+  document.getElementById("mbody").innerHTML =
+    "<div class='m-sec'><div class='m-lbl'>Client Request</div><div class='m-req'>\""+c.req+"\"</div></div>" +
+    "<div class='m-sec'><div class='m-lbl'>Creative</div><div style='border-radius:10px;overflow:hidden'>"+media+"</div></div>" +
+    "<div class='m-sec'><div class='m-lbl'>Caption</div><div class='m-cap'>"+c.cap+"<div class='m-tags'>"+tags+"</div></div></div>" +
+    "<div class='m-sec'><div class='m-lbl'>Accounts</div><div class='m-accs'>"+accs+"</div></div>" +
+    "<div class='m-sec'><div class='m-lbl'>Actions</div><div class='m-acts'>"+btns+"<button class='m-btn m-pst' onclick='doPost("+c.id+")'>🚀 Approve & Post Now</button></div></div>";
+  document.getElementById("mbg").classList.add("on");
+  document.getElementById("modal").classList.add("on");
+}
+
+function closeModal() {
+  document.getElementById("mbg").classList.remove("on");
+  document.getElementById("modal").classList.remove("on");
+  sel = null;
+}
+
+function togAcc(cid, idx) {
+  for(var i=0;i<data.length;i++) {
+    if(data[i].id===cid) { data[i].accs[idx].on = !data[i].accs[idx].on; openModal(cid); break; }
+  }
+}
+
+function doApprove(id) {
+  for(var i=0;i<data.length;i++) { if(data[i].id===id) { data[i].status="approved"; break; } }
+  render();
+  if(sel&&sel.id===id) openModal(id);
+  showToast("✅ Campaign approved!", "s");
+}
+
+function doReject(id) {
+  for(var i=0;i<data.length;i++) { if(data[i].id===id) { data[i].status="rejected"; break; } }
+  render(); closeModal();
+  showToast("Campaign rejected", "e");
+}
+
+function doPost(id) {
+  for(var i=0;i<data.length;i++) { if(data[i].id===id) { data[i].status="posted"; break; } }
+  render(); closeModal();
+  showToast("🚀 Posted to all accounts!", "s");
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show " + type;
+  setTimeout(function(){ t.className = "toast"; }, 3000);
+}
+
+render();
+</script>
+</body>
+</html>
